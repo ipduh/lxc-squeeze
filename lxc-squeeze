@@ -20,7 +20,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# Create a Debian Squeeze Linux Container. 
+# Create a Debian Squeeze Linux Container.
 # g0 <http://ipduh.com/contact>
 # http://sl.ipduh.com/squeeze-lxc
 
@@ -76,7 +76,7 @@ EOF
   mkdir -p $rootfs/selinux
   echo 0 > $rootfs/selinux/enforce
 
-  # configure the network 
+  # configure the network
   cat <<EOF > $rootfs/etc/network/interfaces
 auto lo
 iface lo inet loopback
@@ -140,7 +140,7 @@ download_debian()
   cache=$1
   arch=$2
   release=$3
-  
+
   trap cleanup EXIT SIGHUP SIGINT SIGTERM
   # check the mini debian was not already downloaded
   mkdir -p "$cache/partial-$release-$arch"
@@ -148,7 +148,7 @@ download_debian()
       echo "Failed to create '$cache/partial-$release-$arch' directory"
       return 1
   fi
-  
+
   # download a mini debian into a cache
   echo "Downloading debian minimal ..."
   echo "debootstrap --verbose --variant=minbase --arch=$arch --include=$packages "$release" "$cache/partial-$release-$arch" $MIRROR"
@@ -157,14 +157,14 @@ download_debian()
     echo "Failed to download the rootfs, aborting."
     return 1
   fi
-  
+
   mv "$1/partial-$release-$arch" "$1/rootfs-$release-$arch"
   echo "Download complete."
   trap EXIT
   trap SIGINT
   trap SIGTERM
   trap SIGHUP
-  
+
   return 0
 }
 
@@ -210,9 +210,9 @@ install_debian()
     echo "Failed to copy rootfs"
   return 1
   fi
-  
+
 return 0
-      
+
   ) 200>/var/lock/subsys/lxc-${CONTDEBIANRELEASE}
 
 return $?
@@ -224,7 +224,7 @@ copy_configuration()
   rootfs=$2
   hostname=$3
   arch=$4
-  
+
   # if there is exactly one veth network entry, make sure it has an associated hwaddr.
   nics=`grep -e '^lxc\.network\.type[ \t]*=[ \t]*veth' $path/config | wc -l`
   if [ $nics -eq 1 ]; then
@@ -283,11 +283,11 @@ return 0
 clean()
 {
   cache="/var/cache/lxc/${CONTDEBIANRELEASE}"
-  
+
   if [ ! -e $cache ]; then
     exit 0
   fi
-  
+
   # lock, so we won't purge while someone is creating a repository
   (
     flock -x 200
@@ -311,7 +311,6 @@ EOF
 return 0
 }
 
-# most options do not work
 options=$(getopt -o hp:n:a:r:c -l help,rootfs:,path:,name:,arch:,release:,clean -- "$@")
 if [ $? -ne 0 ]; then
   usage $(basename $0)
